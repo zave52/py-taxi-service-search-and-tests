@@ -10,10 +10,11 @@ class PublicTests(TestCase):
             name="test",
             country="test country"
         )
-        Driver.objects.create(
-            username="test",
-            password="test12345"
+        driver = Driver.objects.create(
+            username="test"
         )
+        driver.set_password("test12345")
+        driver.save()
         Car.objects.create(
             model="test",
             manufacturer=manufacturer
@@ -57,11 +58,12 @@ class PublicTests(TestCase):
 class PrivateTests(TestCase):
     @classmethod
     def setUpTestData(cls) -> None:
-        Driver.objects.create(
+        driver = Driver.objects.create(
             username="test1",
-            password="test12345",
             license_number="test1"
         )
+        driver.set_password("test12345")
+        driver.save()
         manufacturer = Manufacturer.objects.create(
             name="test1",
             country="test country1"
@@ -78,9 +80,10 @@ class PrivateTests(TestCase):
     def setUp(self) -> None:
         user = Driver.objects.create_superuser(
             username="test2",
-            password="test12345",
             license_number="test2"
         )
+        user.set_password("test12345")
+        user.save()
         self.client.force_login(user)
 
     def test_retrieve_manufacturers(self) -> None:
@@ -133,23 +136,26 @@ class SearchTests(TestCase):
             model="Mustang",
             manufacturer=manufacturer2
         )
-        Driver.objects.create(
+        driver1 = Driver.objects.create(
             username="driver1",
-            password="pass1",
             license_number="test1"
         )
-        Driver.objects.create(
+        driver2 = Driver.objects.create(
             username="driver2",
-            password="pass2",
             license_number="test2"
         )
+        driver1.set_password("pass1")
+        driver2.set_password("pass2")
+        driver1.save()
+        driver2.save()
 
     def setUp(self) -> None:
         user = Driver.objects.create_superuser(
             username="test1",
-            password="test12345",
             license_number="test3"
         )
+        user.set_password("test12345")
+        user.save()
         self.client.force_login(user)
 
     def test_search_manufacturer_by_name(self) -> None:
